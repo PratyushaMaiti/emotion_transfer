@@ -31,6 +31,7 @@ Now, with the virtual environment activated in the current shell session, move t
 
 Run the [The Unified Emotion Dataset](https://github.com/sarnthil/unify-emotion-datasets/tree/master/datasets) script. Put the resulting `unified-dataset.jsonl` file into the *datasets/* subfolder of the cloned repository.
 
+#### OPTIONAL: Required for configurations using wordnet
 We further use NLTK to interface wordnet.
 For the case you don't already have downloaded it for a different project, the wordnet data can be downloaded for NLTK with the following command:
 
@@ -38,6 +39,12 @@ For the case you don't already have downloaded it for a different project, the w
 python -m nltk.downloader wordnet
 ```
 (check https://www.nltk.org/data.html for more info on downloading data for NLTK).
+
+#### OPTIONAL: Required for configurations using informed candidate retrieval
+
+Get the NRC Emotion Association Lexicon from here: https://www.saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm
+Place the file `NRC-Emotion-Lexicon-Wordlevel-v0.92.txt` in the `datasets/` subdirectory.
+
 
 ### Additional dependencies
 
