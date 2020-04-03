@@ -33,23 +33,39 @@ def get_input(ctx, param, file):
 @click.option('--format', type=click.Choice(['console', 'csv']), default='console', help='The output format.')
 @click.option('--verbose', is_flag=True)
 def cli(input, target_emotion, config, k, verbose, output, format):
-    """ Emotion transfer command line interface. The single mandatory argument is the target emotion. 
+    """ Emotion transfer command line interface. 
+    The single positional argument is the target emotion. Available values depend on the data the emotion classifier specified in 
+    the config(s) passed as arguments below.
 
     Input is read from stdin. Multiple sentences are supported and are split by newline.
 
         Example:
 
-            cat mysentences.txt | python emotion_transfer.py [OPTIONS] TARGET_EMOTION
+            cat mysentences.txt | python emotion_transfer.py --config configs/pipelines/bf_wn.cfg [OPTIONS] TARGET_EMOTION
     
     Alternatively, a text file with sentences can be passed via the --input option:
 
         Example:
 
-            python emotion_transfer.py --input mysentences.txt [OPTIONS] TARGET_EMOTION
+            python emotion_transfer.py --input mysentences.txt --config configs/pipelines/bf_wn.cfg [OPTIONS] TARGET_EMOTION
     
-    It is recommended to use a configuration file specifying
-    the components to be used, which should be passed with the --config option parameter. If not config file is provided, component definitions
-    must be passed as option parameters (see below)."""
+    Further, at least one pipeline configuration that should be applied can must be passed with the --config option parameter.
+    The --config paramteter can be set multiple times. Configurations will be applied in sequence.
+
+        Example:
+
+            python emotion_transfer.py --input mysentences.txt --config configs/pipelines/bf_wn.cfg --config configs/pipelines/at_wn.cfg [OPTIONS] TARGET_EMOTION
+
+    If no parameter for --format is set, the results will be printed as a table to standard output.
+    Results can alternatively be printed as a csv-file by setting --format to csv and specifying and output filename via the 
+    --output option
+
+        Example:
+
+            python emotion_transfer.py --input mysentences.txt --config configs/pipelines/bf_wn.cfg --format csv --output results.csv TARGET_EMOTION
+
+    For both console and csv output, the option -k can be used to limit the output of highest ranking variation sentences.
+    """
 
 
     # initialize logger
