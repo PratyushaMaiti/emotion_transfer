@@ -9,11 +9,13 @@ Clone the current repository using
 
 ### Environment
 
-Make sure you have at least **Python 3.7** installed. The creation of a virtual environment is heavily recommended when working with the repository:
+Make sure you have **Python 3.7** installed.
+For newever versions, some packages like torch might not be available.
+The creation of a virtual environment is heavily recommended when working with the repository:
 
-Move to the desired directory where you want to create your environment (for example the root folder of the repository) and run 
+Move to the desired directory where you want to create your environment (for example the root folder of the repository) and run (assuming that the command python3.7 points to the respective version on your system):
 
-    > python3 -m venv env
+    > python3.7 -m venv env
 
 This will create a virtual environment in the subfolder *env/*. 
 Activate the virtual environment with 
@@ -52,8 +54,6 @@ emotion_transfer makes use of Spacy for different tasks. It requires the *en_cor
 
     python3 -m spacy download en_core_web_sm
 
-We further use WordNET via NLTK. 
-
 ### Train at least one emotion classifier module
 
 Part of the minimum requirements is to train at least one emotion classifier module. 
@@ -72,17 +72,19 @@ The training script saves two binary files: One *name_emocl.pt* file which conta
 
 ## Define your pipeline
 
-The definition of modules in a pipeline also happens via config files. Please refer to the commented *configs/pipelines/ppl_tec_wna_wn.cfg* file to get a blueprint and and an overview of the supported modules.
+The definition of modules in a pipeline also happens via config files. Please refer to the commented *configs/pipelines/example.cfg* file to get a blueprint and and an overview of the supported modules.
 
 Currently available: (corresponding cfg value in brackets)
 
 | Selection | Substitution | Objective |
 | --------- | ------------ | --------- |
 | Brute forece single (bf_single) | Wordnet (wordnet) | Emotion score (emotion) |
-| Brute force all (bf_all) | Paraphrase Database (ppdb) | Sentence similarity (sim) |
-| Brute force single (bf_single) | | |
-| Brute force threshold (bf_threshold) | | |
-| Attention (attention) | | |
+| Attention (attention) | Distributional spaces uninformed (distr_uninformed) | Sentence similarity (sim) |
+|  | Distributional spaces informed (distr_informed) | Fluency (lm) |
+
+Note that the selection and substitution methods can be combined at will!
+You can further define the weights (check example.cfg).
+If no weight parameters are set in the configuration, the weights will be equally distributed.
 
 Give the config file a speaking name (it will be referenced in the module output) and save it in the *configs/pipelines/* subdirectory.
 
@@ -98,28 +100,49 @@ Please refer to the help text (copied below).
 ```
 Usage: emotion_transfer.py [OPTIONS] TARGET_EMOTION
 
-  Emotion transfer command line interface.
+  Emotion transfer command line interface.  The single positional argument
+  is the target emotion. Available values depend on the data the emotion
+  classifier specified in  the config(s) passed as arguments below.
 
   Input is read from stdin. Multiple sentences are supported and are split
   by newline.
 
       Example:
 
-          cat mysentences.txt | python emotion_transfer.py [OPTIONS]
-          TARGET_EMOTION
+          cat mysentences.txt | python emotion_transfer.py --config
+          configs/pipelines/bf_wn.cfg [OPTIONS] TARGET_EMOTION
 
   Alternatively, a text file with sentences can be passed via the --input
   option:
 
       Example:
 
-          python emotion_transfer.py --input mysentences.txt [OPTIONS]
+          python emotion_transfer.py --input mysentences.txt --config
+          configs/pipelines/bf_wn.cfg [OPTIONS] TARGET_EMOTION
+
+  Further, at least one pipeline configuration that should be applied can
+  must be passed with the --config option parameter. The --config paramteter
+  can be set multiple times. Configurations will be applied in sequence.
+
+      Example:
+
+          python emotion_transfer.py --input mysentences.txt --config
+          configs/pipelines/bf_wn.cfg --config configs/pipelines/at_wn.cfg
+          [OPTIONS] TARGET_EMOTION
+
+  If no parameter for --format is set, the results will be printed as a
+  table to standard output. Results can alternatively be printed as a csv-
+  file by setting --format to csv and specifying and output filename via the
+  --output option
+
+      Example:
+
+          python emotion_transfer.py --input mysentences.txt --config
+          configs/pipelines/bf_wn.cfg --format csv --output results.csv
           TARGET_EMOTION
 
-  It is recommended to use a configuration file specifying the components to
-  be used, which should be passed with the --config option parameter. If not
-  config file is provided, component definitions must be passed as option
-  parameters (see below).
+  For both console and csv output, the option -k can be used to limit the
+  output of highest ranking variation sentences.
 
 Options:
   --input FILENAME        Provide a text file with input sentences. If not
