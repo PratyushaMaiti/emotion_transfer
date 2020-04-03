@@ -12,8 +12,6 @@ logger = logging.getLogger(__name__)
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
-
 class ClassifierHelper:
 
     def __init__(self, model, text_field, label_field):
@@ -145,7 +143,17 @@ class EmotionClassifier(ClassifierHelper):
 
             sentence_scores = []
 
-            target_emotion_index = self.label_field.vocab.stoi[target_emotion]
+            # the stoi (string-to-id) is a defaultdict and defaults to zero when 
+            # a key is provided that is not in the dict
+            # however, we want to throw a KeyError to circumvent unexpected behavior
+            # therefore, we transform it to a normal dict here
+            try:
+                target_emotion_index = dict(self.label_field.vocab.stoi)[target_emotion]
+            except KeyError as err:
+                print(err.args)
+                raise KeyError('Unkown emotion class: {}. Expected on of the following: {}'.format(
+                    err, 
+                    ", ".join(self.label_field.vocab.stoi.keys())))
 
             for p in probs:
                 score = {'emotion': p[target_emotion_index]}
