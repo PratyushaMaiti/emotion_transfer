@@ -1,18 +1,18 @@
-# Challenges in Emotion Style Transfer: An Exploration with a Lexical Substitution Pipeline
+# Introductory Information
 
-This repository hosts the accompanying code for the model described in our eponymous [paper](https://arxiv.org/abs/2005.07617), which was accepted at the SocialNLP Workshop at ACL 2020.
+This repository hosts the accompanying code for the model described in our paper *Challenges in Emotion Style Transfer: An Exploration with a Lexical Substitution Pipeline* ([arXiv](https://arxiv.org/abs/2005.07617)), which was accepted at the SocialNLP Workshop at ACL 2020.
 If you have questions, please send a mail to [us](mailto:david.helbig@ims.uni-stuttgart.de,enrica.troiano@ims.uni-stuttgart.de,roman.klinger@ims.uni-stuttgart.de).
 
-## Prerequisites
+# Prerequisites
 
-### Get the repository
+## Get the repository
 Clone the current repository using 
 
     git clone https://bitbucket.org/st157585/emotion_transfer/
-### Environment
+## Environment
 
 Make sure you have **Python 3.7** installed.
-For newever versions, some packages like torch might not be available.
+For newer versions, some packages like torch might not be available.
 The creation of a virtual environment is heavily recommended when working with the repository:
 
 Move to the desired directory where you want to create your environment (for example the root folder of the repository) and run (assuming that the command python3.7 points to the respective version on your system):
@@ -31,11 +31,11 @@ Now, with the virtual environment activated in the current shell session, move t
 **All ensuing commands must be run with the virtual environment activated** 
 (Usually, the session is closed when the terminal window is closed. The virtual environment can be closed manually with the `deactivate` command)
 
-### Datasets
+## Datasets
 
 Run the [The Unified Emotion Dataset](http://www.ims.uni-stuttgart.de/data/unifyemotion) script. Put the resulting `unified-dataset.jsonl` file into the *datasets/* subfolder of the cloned repository.
 
-#### OPTIONAL: Required for configurations using wordnet
+### OPTIONAL: Required for configurations using wordnet
 We further use NLTK to interface wordnet.
 For the case you don't already have downloaded it for a different project, the wordnet data can be downloaded for NLTK with the following command:
 
@@ -44,35 +44,35 @@ python -m nltk.downloader wordnet
 ```
 (check https://www.nltk.org/data.html for more info on downloading data for NLTK).
 
-#### OPTIONAL: Required for configurations using informed candidate retrieval
+### OPTIONAL: Required for configurations using informed candidate retrieval
 
 Get the NRC Emotion Association Lexicon from here: https://www.saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm
 Place the file `NRC-Emotion-Lexicon-Wordlevel-v0.92.txt` in the `datasets/` subdirectory.
 
 
-### Additional dependencies
+## Additional dependencies
 
 emotion_transfer makes use of Spacy for different tasks. It requires the *en_core_web_sm* module. It can be downloaded running
 
     python3 -m spacy download en_core_web_sm
 
-### Train at least one emotion classifier module
+## Train at least one emotion classifier module
 
 Part of the minimum requirements is to train at least one emotion classifier module. 
-The definition of the metaparameters takes place in config files, which are stored in the *configs/emocl_train/* subdirectory. 
+The definition of the meta parameters takes place in config files, which are stored in the *configs/emocl_train/* subdirectory. 
 Refer to the comments in the *tec.cfg* file to get an overview of the available settings.
-Use the config as a blueprint and set your desired settings (you migth want to change the *name* and *dataset* parameters).
+Use the config as a blueprint and set your desired settings (you might want to change the *name* and *dataset* parameters).
 You can use any filename you want for the config.
 Once you fixed your settings, run the training script from the repository root directory, which takes the path to the config file as its only parameter.
 
     python3 -m objective.emocl.train configs/emocl_train/name_of_your_config.cfg
 
-The config used to train the classifier in the paper is located at `configs/emocl_train/tec.cfg`. It further requires pre-trained 300-dimensional Twitter embeddings provided at https://github.com/cbaziotis/ntua-slp-semeval2018. Downlaod the 300-dimensional embeddings from there and put them in `objective/emocl/nn/embeddings` if you would like to train on this config.
+The config used to train the classifier in the paper is located at `configs/emocl_train/tec.cfg`. It further requires pre-trained 300-dimensional Twitter embeddings provided at https://github.com/cbaziotis/ntua-slp-semeval2018. Download the 300-dimensional embeddings from there and put them in `objective/emocl/nn/embeddings` if you would like to train on this config.
 
 The emotion classifier will now start training with the given parameters. Once training is finished, the trained module will be placed in the *pretrained/* subdirectory of the repository root.
-The training script saves two binary files: One *name_emocl.pt* file which contains the module itself including the weights, and one *name_fields.dill* file which contains mapping information for input tokens to embeddings and numericalized labels.
+The training script saves two binary files: One *name_emocl.pt* file which contains the module itself including the weights, and one *name_fields.dill* file which contains mapping information for input tokens to embeddings and numericized labels.
 
-## Define your pipeline
+# Define your pipeline
 
 The definition of modules in a pipeline also happens via config files. Please refer to the commented *configs/pipelines/example.cfg* file to get a blueprint and and an overview of the supported modules.
 
@@ -80,7 +80,7 @@ Currently available: (corresponding cfg value in brackets)
 
 | Selection | Substitution | Objective |
 | --------- | ------------ | --------- |
-| Brute forece single (bf_single) | Wordnet (wordnet) | Emotion score (emotion) |
+| Brute force single (bf_single) | Wordnet (wordnet) | Emotion score (emotion) |
 | Attention (attention) | Distributional spaces uninformed (distr_uninformed) | Sentence similarity (sim) |
 |  | Distributional spaces informed (distr_informed) | Fluency (lm) |
 
@@ -90,15 +90,16 @@ If no weight parameters are set in the configuration, the weights will be equall
 
 Give the config file a speaking name (it will be referenced in the module output) and save it in the *configs/pipelines/* subdirectory.
 
-## Run the pipeline using the main script 
+# Run the pipeline using the main script 
 
-Once you defindet your pipeline in a config, you can run the pipeline using the main script.
+Once you defined your pipeline in a config, you can run the pipeline using the main script.
 
 The script itself has a *--help* flag which displays the available parameters:
 
     python3 emotion_transfer.py --help
 
 Please refer to the help text (copied below).
+
 ```
 Usage: emotion_transfer.py [OPTIONS] TARGET_EMOTION
 
