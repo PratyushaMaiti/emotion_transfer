@@ -1,12 +1,14 @@
-# Emotion Style Transfer in Text
+# Challenges in Emotion Style Transfer: An Exploration with a Lexical Substitution Pipeline
+
+This repository hosts the accompanying code for the model described in our eponymous [paper](https://arxiv.org/abs/2005.07617), which was accepted at the SocialNLP Workshop at ACL 2020.
+If you have questions, please send a mail to [us](mailto:david.helbig@ims.uni-stuttgart.de,enrica.troiano@ims.uni-stuttgart.de,roman.klinger@ims.uni-stuttgart.de).
 
 ## Prerequisites
 
 ### Get the repository
 Clone the current repository using 
 
-    > git clone git@clarin06.ims.uni-stuttgart.de:DavidHelbig/emotion-transfer.git
-
+    git clone https://bitbucket.org/st157585/emotion_transfer/
 ### Environment
 
 Make sure you have **Python 3.7** installed.
@@ -15,23 +17,23 @@ The creation of a virtual environment is heavily recommended when working with t
 
 Move to the desired directory where you want to create your environment (for example the root folder of the repository) and run (assuming that the command python3.7 points to the respective version on your system):
 
-    > python3.7 -m venv env
+    python3.7 -m venv env
 
 This will create a virtual environment in the subfolder *env/*. 
 Activate the virtual environment with 
 
-    > source env/bin/activate
+    source env/bin/activate
 
 Now, with the virtual environment activated in the current shell session, move to the repository root (if you're not already there) and install the necessary packages with 
 
-    > pip3 install -r requirements.txt
+    pip3 install -r requirements.txt
 
 **All ensuing commands must be run with the virtual environment activated** 
-(Usually, the session is closed when the terminal window is closed. The virtual environment can be close manually with the `deactivate` command)
+(Usually, the session is closed when the terminal window is closed. The virtual environment can be closed manually with the `deactivate` command)
 
 ### Datasets
 
-Run the [The Unified Emotion Dataset](https://github.com/sarnthil/unify-emotion-datasets/tree/master/datasets) script. Put the resulting `unified-dataset.jsonl` file into the *datasets/* subfolder of the cloned repository.
+Run the [The Unified Emotion Dataset](http://www.ims.uni-stuttgart.de/data/unifyemotion) script. Put the resulting `unified-dataset.jsonl` file into the *datasets/* subfolder of the cloned repository.
 
 #### OPTIONAL: Required for configurations using wordnet
 We further use NLTK to interface wordnet.
@@ -63,7 +65,7 @@ Use the config as a blueprint and set your desired settings (you migth want to c
 You can use any filename you want for the config.
 Once you fixed your settings, run the training script from the repository root directory, which takes the path to the config file as its only parameter.
 
-    > python3 -m objective.emocl.train configs/emocl_train/name_of_your_config.cfg
+    python3 -m objective.emocl.train configs/emocl_train/name_of_your_config.cfg
 
 The config used to train the classifier in the paper is located at `configs/emocl_train/tec.cfg`. It further requires pre-trained 300-dimensional Twitter embeddings provided at https://github.com/cbaziotis/ntua-slp-semeval2018. Downlaod the 300-dimensional embeddings from there and put them in `objective/emocl/nn/embeddings` if you would like to train on this config.
 
@@ -94,7 +96,7 @@ Once you defindet your pipeline in a config, you can run the pipeline using the 
 
 The script itself has a *--help* flag which displays the available parameters:
 
-    > python3 emotion_transfer.py --help
+    python3 emotion_transfer.py --help
 
 Please refer to the help text (copied below).
 ```
