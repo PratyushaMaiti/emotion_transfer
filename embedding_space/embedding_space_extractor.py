@@ -6,7 +6,7 @@ import numpy as np
 import tabulate
 import torch
 from gensim.models import KeyedVectors
-from gensim.similarities.index import AnnoyIndexer
+from gensim.similarities.annoy import AnnoyIndexer
 from scipy.spatial.distance import cosine
 
 from selection.utils.nrc_interface import NRC_Interface

@@ -2,7 +2,7 @@ import logging
 
 from base import Dataset
 
-from torchtext.data import Dataset, Example, Field
+from torchtext.legacy.data import Dataset, Example, Field
 
 from collections.abc import Sequence
 
